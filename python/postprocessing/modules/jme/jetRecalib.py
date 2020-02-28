@@ -8,11 +8,14 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.tools import matchObjectCollection, matchObjectCollectionMultiple
 from PhysicsTools.NanoAODTools.postprocessing.modules.jme.JetReCalibrator import JetReCalibrator
 
+
+# We use this module only to DATA sammples
+
+
 class jetRecalib(Module):
-    def __init__(self,  globalTag, archive, jetType = "AK4PFchs", redoJEC=True, year = 2018):
+    def __init__(self,  globalTag, archive, jetType = "AK4PFchs", redoJEC=False):
 
         self.redoJEC = redoJEC
-        self.year = year
 
         if "AK4" in jetType : 
             self.jetBranchName = "Jet"
@@ -70,7 +73,7 @@ class jetRecalib(Module):
         """process event, return True (go to next module) or False (fail, go to next event)"""
         jets = Collection(event, self.jetBranchName )
         if self.subJetBranchName != "": subJets = Collection(event, self.subJetBranchName )
-        met = Object(event, "MET" if (self.year != 2017 and self.year != 17) else 'METFixEE2017') 
+        met = Object(event, "MET") 
 
         jets_pt_raw = []
         jets_pt_nom = []
@@ -159,6 +162,8 @@ class jetRecalib(Module):
 
 
 # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
+jetmetRecalib5TeVDATA = lambda : jetRecalib("Spring18_ppRef5TeV_V4_DATA", "Spring18_ppRef5TeV_V4_DATA",redoJEC = True)
+
 jetRecalib2016BCD = lambda : jetRecalib("Summer16_07Aug2017BCD_V11_DATA","Summer16_07Aug2017_V11_DATA")
 jetRecalib2016EF = lambda : jetRecalib("Summer16_07Aug2017EF_V11_DATA","Summer16_07Aug2017_V11_DATA")
 jetRecalib2016GH = lambda : jetRecalib("Summer16_07Aug2017GH_V11_DATA","Summer16_07Aug2017_V11_DATA")

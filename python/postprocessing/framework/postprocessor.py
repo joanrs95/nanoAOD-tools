@@ -11,9 +11,10 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.preskimming import preSk
 from PhysicsTools.NanoAODTools.postprocessing.framework.jobreport import JobReport
 
 class PostProcessor :
-    def __init__(self,outputDir,inputFiles,cut=None,branchsel=None,modules=[],compression="LZMA:9",friend=False,postfix=None,
+    def __init__(self,outputDir, outFileName, inputFiles,cut=None,branchsel=None,modules=[],compression="LZMA:9",friend=False,postfix=None,
 		 jsonInput=None,noOut=False,justcount=False,provenance=False,haddFileName=None,fwkJobReport=False,histFileName=None,histDirName=None, outputbranchsel=None):
 	self.outputDir=outputDir
+	self.outFileName=outFileName
 	self.inputFiles=inputFiles
 	self.cut=cut
 	self.modules=modules
@@ -114,9 +115,9 @@ class PostProcessor :
 
 	    # prepare output file
             if not self.noOut:
-                outFileName = os.path.join(self.outputDir, os.path.basename(fname).replace(".root",outpostfix+".root"))
-                outFile = ROOT.TFile.Open(outFileName, "RECREATE", "", compressionLevel)
-                outFileNames.append(outFileName)
+                outFilename = os.path.join(self.outputDir, self.outFileName)
+                outFile = ROOT.TFile.Open(outFilename, "RECREATE", "", compressionLevel)
+                outFileNames.append(outFilename)
                 if compressionLevel: 
                     outFile.SetCompressionAlgorithm(compressionAlgo)
                 # prepare output tree
@@ -150,7 +151,7 @@ class PostProcessor :
                 self.hsumofweights.Write()
                 outTree.write()
                 outFile.Close()
-                print "Done %s" % outFileName
+                print "Done %s" % outFilename
 	    if self.jobReport:
 		self.jobReport.addInputFile(fname,nall)
 		
